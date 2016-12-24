@@ -103,6 +103,14 @@ definitions:
       http://ethereum.stackexchange.com/questions/2376/what-does-each-genesis-json-parameter-mean
       Authors niksmac, eth, Igor Barinov, variable, Siu Ching Pong -Asuka Kenji-
       More documentation at http://paper.gavwood.com/ for the Yellow Paper
+    required:
+      - nonce
+      - timestamp
+      - parent_hash
+      - extra_data
+      - gas_limit
+      - difficulty
+      - mixhash
     properties:
       nonce:
         type: string

@@ -43,19 +43,22 @@ type Genesis struct {
 	// waiting during tests, since the discovery of a valid Block is required
 	// to execute a transaction on the Blockchain.
 	//
-	Difficulty *string `json:"difficulty,omitempty"`
+	// Required: true
+	Difficulty *string `json:"difficulty"`
 
 	// extraData An optional free, but max. 32-byte long space to conserve
 	// smart things for ethernity. :)
 	//
-	ExtraData string `json:"extra_data,omitempty"`
+	// Required: true
+	ExtraData *string `json:"extra_data"`
 
 	// gasLimit A scalar value equal to the current chain-wide limit of Gas
 	// expenditure per block. High in our case to avoid being limited by this
 	// threshold during tests. Note that this does not indicate that we
 	// should not pay attention to the Gas consumption of our Contracts.
 	//
-	GasLimit *string `json:"gas_limit,omitempty"`
+	// Required: true
+	GasLimit *string `json:"gas_limit"`
 
 	// mixhash A 256-bit hash which proves, combined with the nonce, that a
 	// sufficient amount of computation has been carried out on this block,
@@ -64,7 +67,8 @@ type Genesis struct {
 	// Block Header Validity, (44). It allows to verify that the Block has
 	// really been cryptographically mined, thus, from this aspect, is valid.
 	//
-	Mixhash string `json:"mixhash,omitempty"`
+	// Required: true
+	Mixhash *string `json:"mixhash"`
 
 	// nonce A 64-bit hash, which proves, combined with the mix-hash, that a
 	// sufficient amount of computation has been carried out on this block,
@@ -77,14 +81,16 @@ type Genesis struct {
 	// computation has been expended in the determination of this token
 	// value. (Yellowpager, 11.5. Mining Proof-of-Work).
 	//
-	Nonce *string `json:"nonce,omitempty"`
+	// Required: true
+	Nonce *string `json:"nonce"`
 
 	// parentHash The Keccak 256-bit hash of the entire parent block header
 	// (including its nonce and mixhash). Pointer to the parent block, thus
 	// effectively building the chain of blocks. In the case of the Genesis
 	// block, and only in this case, it's 0.
 	//
-	ParentHash string `json:"parent_hash,omitempty"`
+	// Required: true
+	ParentHash *string `json:"parent_hash"`
 
 	// timestamp A scalar value equal to the reasonable output of Unix time()
 	// function at this block inception. This mechanism enforces a
@@ -95,7 +101,8 @@ type Genesis struct {
 	// to the next block, is reduced. The timestamp also allows verifying the
 	// order of block within the chain (Yellowpaper, 4.3.4. (43)).
 	//
-	Timestamp string `json:"timestamp,omitempty"`
+	// Required: true
+	Timestamp *string `json:"timestamp"`
 }
 
 // Validate validates this genesis
@@ -103,6 +110,41 @@ func (m *Genesis) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAlloc(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateDifficulty(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateExtraData(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateGasLimit(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateMixhash(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateNonce(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateParentHash(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateTimestamp(formats); err != nil {
 		// prop
 		res = append(res, err)
 	}
@@ -120,6 +162,69 @@ func (m *Genesis) validateAlloc(formats strfmt.Registry) error {
 	}
 
 	if err := validate.Required("alloc", "body", m.Alloc); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Genesis) validateDifficulty(formats strfmt.Registry) error {
+
+	if err := validate.Required("difficulty", "body", m.Difficulty); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Genesis) validateExtraData(formats strfmt.Registry) error {
+
+	if err := validate.Required("extra_data", "body", m.ExtraData); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Genesis) validateGasLimit(formats strfmt.Registry) error {
+
+	if err := validate.Required("gas_limit", "body", m.GasLimit); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Genesis) validateMixhash(formats strfmt.Registry) error {
+
+	if err := validate.Required("mixhash", "body", m.Mixhash); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Genesis) validateNonce(formats strfmt.Registry) error {
+
+	if err := validate.Required("nonce", "body", m.Nonce); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Genesis) validateParentHash(formats strfmt.Registry) error {
+
+	if err := validate.Required("parent_hash", "body", m.ParentHash); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Genesis) validateTimestamp(formats strfmt.Registry) error {
+
+	if err := validate.Required("timestamp", "body", m.Timestamp); err != nil {
 		return err
 	}
 
