@@ -7,6 +7,7 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/validate"
 )
 
 // Allocator An allocator object represent an account on the blockchain.
@@ -20,12 +21,14 @@ type Allocator struct {
 	//       * 10^15 Finney
 	//       * 10^18 Ether
 	//
-	Balance string `json:"balance,omitempty"`
+	// Required: true
+	Balance *string `json:"balance"`
 
 	// The code for the account.
 	Code string `json:"code,omitempty"`
 
 	// The private key generate along with the use of new_allocator,
+	// will be provided only once and will not get store.
 	// DO NOT SUBMIT YOUR PRIVATE KEY if you fills allocators.
 	//
 	PrivateKey string `json:"private_key,omitempty"`
@@ -38,8 +41,22 @@ type Allocator struct {
 func (m *Allocator) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateBalance(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Allocator) validateBalance(formats strfmt.Registry) error {
+
+	if err := validate.Required("balance", "body", m.Balance); err != nil {
+		return err
+	}
+
 	return nil
 }

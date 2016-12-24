@@ -43,7 +43,7 @@ type Genesis struct {
 	// waiting during tests, since the discovery of a valid Block is required
 	// to execute a transaction on the Blockchain.
 	//
-	Difficulty string `json:"difficulty,omitempty"`
+	Difficulty *string `json:"difficulty,omitempty"`
 
 	// extraData An optional free, but max. 32-byte long space to conserve
 	// smart things for ethernity. :)
@@ -55,7 +55,7 @@ type Genesis struct {
 	// threshold during tests. Note that this does not indicate that we
 	// should not pay attention to the Gas consumption of our Contracts.
 	//
-	GasLimit string `json:"gas_limit,omitempty"`
+	GasLimit *string `json:"gas_limit,omitempty"`
 
 	// mixhash A 256-bit hash which proves, combined with the nonce, that a
 	// sufficient amount of computation has been carried out on this block,
@@ -77,7 +77,7 @@ type Genesis struct {
 	// computation has been expended in the determination of this token
 	// value. (Yellowpager, 11.5. Mining Proof-of-Work).
 	//
-	Nonce string `json:"nonce,omitempty"`
+	Nonce *string `json:"nonce,omitempty"`
 
 	// parentHash The Keccak 256-bit hash of the entire parent block header
 	// (including its nonce and mixhash). Pointer to the parent block, thus

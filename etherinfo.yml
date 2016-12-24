@@ -117,6 +117,7 @@ definitions:
           that proves beyond reasonable doubt that a particular amount of
           computation has been expended in the determination of this token
           value. (Yellowpager, 11.5. Mining Proof-of-Work).
+        default: 0x0000000000000042
       timestamp:
         type: string
         description: |
@@ -128,6 +129,7 @@ definitions:
           block. If the period is too large, the difficulty, and expected time
           to the next block, is reduced. The timestamp also allows verifying the
           order of block within the chain (Yellowpaper, 4.3.4. (43)).
+        default: 0x0
       parent_hash:
         type: string
         description: |
@@ -135,6 +137,7 @@ definitions:
           (including its nonce and mixhash). Pointer to the parent block, thus
           effectively building the chain of blocks. In the case of the Genesis
           block, and only in this case, it's 0.
+        default: 0x0000000000000000000000000000000000000000000000000000000000000000
       extra_data:
         type: string
         description: |
@@ -147,6 +150,7 @@ definitions:
           expenditure per block. High in our case to avoid being limited by this
           threshold during tests. Note that this does not indicate that we
           should not pay attention to the Gas consumption of our Contracts.
+        default: 0x8000000
       difficulty:
         type: string
         description: |
@@ -160,6 +164,7 @@ definitions:
           target range. On the test network, we keep this value low to avoid
           waiting during tests, since the discovery of a valid Block is required
           to execute a transaction on the Blockchain.
+        default: 0x8000000
       mixhash:
         type: string
         description: |
@@ -169,6 +174,7 @@ definitions:
           satisfy a mathematical condition described in the Yellowpaper, 4.3.4.
           Block Header Validity, (44). It allows to verify that the Block has
           really been cryptographically mined, thus, from this aspect, is valid.
+        default: 0x0000000000000000000000000000000000000000000000000000000000000000
       coinbase:
         type: string
         description: |
@@ -179,6 +185,7 @@ definitions:
           sometimes “etherbase” in the online documentation. This can be
           anything in the Genesis Block since the value is set by the setting of
           the Miner when a new Block is created.
+        default: 0x0000000000000000000000000000000000000000
       alloc:
         type: object
         description: List of allocators to seed the genesis with
@@ -191,6 +198,8 @@ definitions:
     type: object
     description: |
       An allocator object represent an account on the blockchain.
+    required:
+      - balance
     properties:
       code:
         type: string
@@ -210,6 +219,7 @@ definitions:
         type: string
         description: |
           The private key generate along with the use of new_allocator,
+          will be provided only once and will not get store.
           DO NOT SUBMIT YOUR PRIVATE KEY if you fills allocators.
   Information:
     type: object

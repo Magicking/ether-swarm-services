@@ -6,14 +6,31 @@ package operations
 import (
 	"errors"
 	"net/url"
+	golangswaggerpaths "path"
 )
 
 // StartNodeURL generates an URL for the start node operation
 type StartNodeURL struct {
 	Etherbase string
 
+	_basePath string
 	// avoid unkeyed usage
 	_ struct{}
+}
+
+// WithBasePath sets the base path for this url builder, only required when it's different from the
+// base path specified in the swagger spec.
+// When the value of the base path is an empty string
+func (o *StartNodeURL) WithBasePath(bp string) *StartNodeURL {
+	o.SetBasePath(bp)
+	return o
+}
+
+// SetBasePath sets the base path for this url builder, only required when it's different from the
+// base path specified in the swagger spec.
+// When the value of the base path is an empty string
+func (o *StartNodeURL) SetBasePath(bp string) {
+	o._basePath = bp
 }
 
 // Build a url path and query string
@@ -22,7 +39,8 @@ func (o *StartNodeURL) Build() (*url.URL, error) {
 
 	var _path = "/blockchain/node"
 
-	result.Path = _path
+	_basePath := o._basePath
+	result.Path = golangswaggerpaths.Join(_basePath, _path)
 
 	qs := make(url.Values)
 

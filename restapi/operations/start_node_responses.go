@@ -17,7 +17,9 @@ swagger:response startNodeOK
 */
 type StartNodeOK struct {
 
-	// In: body
+	/*
+	  In: Body
+	*/
 	Payload bool `json:"body,omitempty"`
 }
 
@@ -41,7 +43,8 @@ func (o *StartNodeOK) SetPayload(payload bool) {
 func (o *StartNodeOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	if err := producer.Produce(rw, o.Payload); err != nil {
+	payload := o.Payload
+	if err := producer.Produce(rw, payload); err != nil {
 		panic(err) // let the recovery middleware deal with this
 	}
 
@@ -54,7 +57,9 @@ swagger:response startNodeDefault
 type StartNodeDefault struct {
 	_statusCode int
 
-	// In: body
+	/*
+	  In: Body
+	*/
 	Payload *models.Error `json:"body,omitempty"`
 }
 
@@ -96,7 +101,8 @@ func (o *StartNodeDefault) WriteResponse(rw http.ResponseWriter, producer runtim
 
 	rw.WriteHeader(o._statusCode)
 	if o.Payload != nil {
-		if err := producer.Produce(rw, o.Payload); err != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
 			panic(err) // let the recovery middleware deal with this
 		}
 	}

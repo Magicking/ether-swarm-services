@@ -19,7 +19,9 @@ swagger:response createGenesisOK
 */
 type CreateGenesisOK struct {
 
-	// In: body
+	/*
+	  In: Body
+	*/
 	Payload []*models.Allocator `json:"body,omitempty"`
 }
 
@@ -43,7 +45,12 @@ func (o *CreateGenesisOK) SetPayload(payload []*models.Allocator) {
 func (o *CreateGenesisOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	if err := producer.Produce(rw, o.Payload); err != nil {
+	payload := o.Payload
+	if payload == nil {
+		payload = make([]*models.Allocator, 0, 50)
+	}
+
+	if err := producer.Produce(rw, payload); err != nil {
 		panic(err) // let the recovery middleware deal with this
 	}
 
@@ -56,7 +63,9 @@ swagger:response createGenesisDefault
 type CreateGenesisDefault struct {
 	_statusCode int
 
-	// In: body
+	/*
+	  In: Body
+	*/
 	Payload *models.Error `json:"body,omitempty"`
 }
 
@@ -98,7 +107,8 @@ func (o *CreateGenesisDefault) WriteResponse(rw http.ResponseWriter, producer ru
 
 	rw.WriteHeader(o._statusCode)
 	if o.Payload != nil {
-		if err := producer.Produce(rw, o.Payload); err != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
 			panic(err) // let the recovery middleware deal with this
 		}
 	}
