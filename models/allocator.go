@@ -5,6 +5,7 @@ package models
 
 import (
 	strfmt "github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/validate"
@@ -34,7 +35,7 @@ type Allocator struct {
 	PrivateKey string `json:"private_key,omitempty"`
 
 	// The initial storage.
-	Storage string `json:"storage,omitempty"`
+	Storage map[string]string `json:"storage,omitempty"`
 }
 
 // Validate validates this allocator
@@ -42,6 +43,11 @@ func (m *Allocator) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateBalance(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateStorage(formats); err != nil {
 		// prop
 		res = append(res, err)
 	}
@@ -55,6 +61,19 @@ func (m *Allocator) Validate(formats strfmt.Registry) error {
 func (m *Allocator) validateBalance(formats strfmt.Registry) error {
 
 	if err := validate.Required("balance", "body", m.Balance); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Allocator) validateStorage(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Storage) { // not required
+		return nil
+	}
+
+	if err := validate.Required("storage", "body", m.Storage); err != nil {
 		return err
 	}
 

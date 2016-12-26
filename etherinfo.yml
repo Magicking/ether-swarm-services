@@ -214,7 +214,7 @@ definitions:
         type: string
         description: The code for the account.
       storage:
-        type: string
+        type: object
         description: The initial storage.
         additionalProperties:
           type: string
