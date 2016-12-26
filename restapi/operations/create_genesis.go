@@ -31,8 +31,9 @@ func NewCreateGenesis(ctx *middleware.Context, handler CreateGenesisHandler) *Cr
 
 Create genesis
 
-Create a genesis and lock it in database, if the optional genesis
-contains allocators new_allocator is ignored.
+Create a genesis and lock it, this call can only be made once if
+successful. If no genesis are provided new_allocator default to 1
+otherwise default to 0 if not set.
 
 
 */

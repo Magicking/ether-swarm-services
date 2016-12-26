@@ -30,7 +30,7 @@ type Genesis struct {
 	// anything in the Genesis Block since the value is set by the setting of
 	// the Miner when a new Block is created.
 	//
-	Coinbase string `json:"coinbase,omitempty"`
+	Coinbase *string `json:"coinbase,omitempty"`
 
 	// difficulty A scalar value corresponding to the difficulty level
 	// applied during the nonce discovering of this block. It defines the

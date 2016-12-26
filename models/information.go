@@ -15,7 +15,7 @@ import (
 type Information struct {
 
 	// bootnodes urls
-	BootnodesUrls []interface{} `json:"bootnodes_urls"`
+	BootnodesUrls []string `json:"bootnodes_urls"`
 
 	// genesis
 	Genesis *Genesis `json:"genesis,omitempty"`
@@ -28,6 +28,11 @@ type Information struct {
 func (m *Information) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateBootnodesUrls(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if err := m.validateGenesis(formats); err != nil {
 		// prop
 		res = append(res, err)
@@ -36,6 +41,15 @@ func (m *Information) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Information) validateBootnodesUrls(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.BootnodesUrls) { // not required
+		return nil
+	}
+
 	return nil
 }
 
