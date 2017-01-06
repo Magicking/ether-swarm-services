@@ -32,7 +32,7 @@ type Allocator struct {
 	// will be provided only once and will not get store.
 	// DO NOT SUBMIT YOUR PRIVATE KEY if you fills allocators.
 	//
-	PrivateKey string `json:"private_key,omitempty"`
+	PrivateKey *string `json:"private_key,omitempty"`
 
 	// The initial storage.
 	Storage map[string]string `json:"storage,omitempty"`

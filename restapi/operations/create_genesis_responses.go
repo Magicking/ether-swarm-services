@@ -11,7 +11,7 @@ import (
 	"github.com/Magicking/ether-swarm-services/models"
 )
 
-/*CreateGenesisOK Return the address of allocators and private keys if new_allocator
+/*CreateGenesisOK Return the new genesis with allocators and private keys if new_allocator
 was used.
 
 
@@ -22,7 +22,7 @@ type CreateGenesisOK struct {
 	/*
 	  In: Body
 	*/
-	Payload []*models.Allocator `json:"body,omitempty"`
+	Payload *models.Genesis `json:"body,omitempty"`
 }
 
 // NewCreateGenesisOK creates CreateGenesisOK with default headers values
@@ -31,13 +31,13 @@ func NewCreateGenesisOK() *CreateGenesisOK {
 }
 
 // WithPayload adds the payload to the create genesis o k response
-func (o *CreateGenesisOK) WithPayload(payload []*models.Allocator) *CreateGenesisOK {
+func (o *CreateGenesisOK) WithPayload(payload *models.Genesis) *CreateGenesisOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create genesis o k response
-func (o *CreateGenesisOK) SetPayload(payload []*models.Allocator) {
+func (o *CreateGenesisOK) SetPayload(payload *models.Genesis) {
 	o.Payload = payload
 }
 
@@ -45,15 +45,12 @@ func (o *CreateGenesisOK) SetPayload(payload []*models.Allocator) {
 func (o *CreateGenesisOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	payload := o.Payload
-	if payload == nil {
-		payload = make([]*models.Allocator, 0, 50)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
-
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
-	}
-
 }
 
 /*CreateGenesisDefault Unexpected error.

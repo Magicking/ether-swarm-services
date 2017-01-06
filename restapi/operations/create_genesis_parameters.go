@@ -32,13 +32,12 @@ type CreateGenesisParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request
 
-	/*Optional genesis, missing informations are filled from
-	default.
+	/*Optional genesis object replacing default.
 
 	  In: body
 	*/
 	Genesis *models.Genesis
-	/*The numbers of allocators to generate.
+	/*The numbers of allocators to create for the new genesis.
 	  In: query
 	*/
 	NewAllocator *int64
