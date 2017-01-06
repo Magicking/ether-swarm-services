@@ -34,9 +34,6 @@
 [submodule "vendor/github.com/go-openapi/spec"]
 	path = vendor/github.com/go-openapi/spec
 	url = https://github.com/go-openapi/spec
-[submodule "vendor/github.com/go-openapi/strfmt"]
-	path = vendor/github.com/go-openapi/strfmt
-	url = https://github.com/go-openapi/strfmt
 [submodule "vendor/github.com/go-openapi/swag"]
 	path = vendor/github.com/go-openapi/swag
 	url = https://github.com/go-openapi/swag
@@ -67,3 +64,9 @@
 [submodule "vendor/github.com/docker/go-units"]
 	path = vendor/github.com/docker/go-units
 	url = https://github.com/docker/go-units
+[submodule "vendor/github.com/go-openapi/strfmt"]
+	path = vendor/github.com/go-openapi/strfmt
+	url = https://github.com/go-openapi/strfmt
+[submodule "vendor/gopkg.in/yaml.v2"]
+	path = vendor/gopkg.in/yaml.v2
+	url = https://gopkg.in/yaml.v2
