@@ -85,6 +85,9 @@ func configureAPI(api *operations.EtherinfoAPI) http.Handler {
 			genesis = params.Genesis
 		}
 
+		if genesis.Alloc == nil {
+			genesis.Alloc = make(map[string]models.Allocator)
+		}
 		for ; allocator > 0; allocator-- {
 			address, alloc, err := blockchain.NewAllocator(genesis_opts.Balance)
 			if err != nil {
