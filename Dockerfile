@@ -7,4 +7,4 @@ WORKDIR $PROJECT_PATH
 
 RUN go install -v ./cmd/...
 
-ENTRYPOINT ["/go/bin/etherinfo-server"]
+ENTRYPOINT ["/go/bin/etherinfo-server", "--host", "0.0.0.0", "--port", "8090"]
