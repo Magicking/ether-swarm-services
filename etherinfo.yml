@@ -14,18 +14,15 @@ paths:
       summary: Create genesis
       operationId: createGenesis
       description: |
-        Create a genesis and lock it, this call can only be made once if
-        successful. If no genesis are provided new_allocator default to 1
-        otherwise default to 0 if not set.
+        Create a genesis and lock it. If no genesis are provided new_allocator
+        default to 1 otherwise default to 0 if not set.
       responses:
         200:
           description: |
-            Return the address of allocators and private keys if new_allocator
+            Return the new genesis with allocators and private keys if new_allocator
             was used.
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Allocator'
+            $ref: '#/definitions/Genesis'
         default:
           description: Unexpected error.
           schema:
@@ -34,14 +31,13 @@ paths:
         - name: new_allocator
           in: query
           type: integer
-          description: The numbers of allocators to generate.
+          description: The numbers of allocators to create for the new genesis.
         - name: genesis
           in: body
           schema:
             $ref: '#/definitions/Genesis'
           description: |
-            Optional genesis, missing informations are filled from
-            default.
+            Optional genesis object replacing default.
   /blockchain/info:
     get:
       summary: Return information necessary to participate to the blockchain
@@ -232,6 +228,7 @@ definitions:
           The private key generate along with the use of new_allocator,
           will be provided only once and will not get store.
           DO NOT SUBMIT YOUR PRIVATE KEY if you fills allocators.
+        default: " "
   Information:
     type: object
     properties:
