@@ -3,6 +3,7 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
+	"log"
 
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
@@ -10,7 +11,10 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	graceful "github.com/tylerb/graceful"
 
+	"github.com/Magicking/ether-swarm-services/models"
 	"github.com/Magicking/ether-swarm-services/restapi/operations"
+
+	"github.com/Magicking/ether-swarm-services/internal/blockchain"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -53,7 +57,54 @@ func configureAPI(api *operations.EtherinfoAPI) http.Handler {
 	api.JSONProducer = runtime.JSONProducer()
 
 	api.CreateGenesisHandler = operations.CreateGenesisHandlerFunc(func(params operations.CreateGenesisParams) middleware.Responder {
-		return middleware.NotImplemented("operation .CreateGenesis has not yet been implemented")
+		var allocator int
+
+		if params.NewAllocator == nil {
+			if params.Genesis == nil {
+				allocator = 1
+			} else {
+				allocator = 0
+			}
+		} else {
+			allocator = int(*params.NewAllocator)
+		}
+
+		var genesis *models.Genesis
+		if params.Genesis == nil {
+			genesis = &models.Genesis{
+				Coinbase: &genesis_opts.Coinbase,
+				Difficulty: &genesis_opts.Difficulty,
+				ExtraData: &genesis_opts.ExtraData,
+				GasLimit: &genesis_opts.GasLimit,
+				Mixhash: &genesis_opts.Mixhash,
+				Nonce: &genesis_opts.Nonce,
+				ParentHash: &genesis_opts.ParentHash,
+				Timestamp: &genesis_opts.Timestamp,
+			}
+		} else {
+			genesis = params.Genesis
+		}
+
+		for ; allocator > 0; allocator-- {
+			address, alloc, err := blockchain.NewAllocator(genesis_opts.Balance)
+			if err != nil {
+				log.Printf("CreateGenesis: %v", err)
+				return operations.NewCreateGenesisDefault(500)
+			}
+			_, ok := genesis.Alloc[address]
+			if ok {
+				allocator++
+				continue
+			}
+			genesis.Alloc[address] = *alloc
+		}
+		ret := operations.NewCreateGenesisOK().WithPayload(genesis)
+		for _, e := range genesis.Alloc {
+			e.PrivateKey = nil
+		}
+		// save it
+		log.Printf("%v", genesis)
+		return ret
 	})
 	api.GetInformationHandler = operations.GetInformationHandlerFunc(func(params operations.GetInformationParams) middleware.Responder {
 		return middleware.NotImplemented("operation .GetInformation has not yet been implemented")
