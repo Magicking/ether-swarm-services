@@ -2,6 +2,7 @@ package internal
 
 import (
 	"fmt"
+	"encoding/json"
 
 	"github.com/Magicking/ether-swarm-services/models"
 	"github.com/Magicking/ether-swarm-services/restapi/operations"
@@ -60,7 +61,11 @@ func CreateGenesisHandler(ctx *Context, gen_default *GenesisConf, params operati
 	for _, e := range genesis.Alloc {
 		e.PrivateKey = nil
 	}
-	if err := InsertGenesis(ctx, &Genesis{Genesis: genesis}); err != nil {
+	jsonData, err := json.Marshal(genesis)
+	if err != nil {
+		return nil, fmt.Errorf("CreateGenesis: %v", err)
+	}
+	if err := InsertGenesis(ctx, &Genesis{JSONData: jsonData}); err != nil {
 		return nil, fmt.Errorf("CreateGenesis: %v", err)
 	}
 	return genesis, nil

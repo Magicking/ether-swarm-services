@@ -26,6 +26,7 @@ var genesis_opts internal.GenesisConf
 
 var svc_opts struct {
 	DbDsn     string `long:"db-dsn" env:"DB_DSN" default:"host=localhost dbname=etherinfo sslmode=disable" description:"Data source name, currently only support postgres"`
+	NetworkID int64 `long:"networkid" env:"NETWORK_ID" default:"6120" description:"Ethereum network id"`
 }
 
 func configureFlags(api *operations.EtherinfoAPI) {
@@ -59,6 +60,7 @@ func configureAPI(api *operations.EtherinfoAPI) http.Handler {
 	if err != nil {
 		log.Fatalf("configureAPI: %v", err)
 	}
+	ctx.NetworkID = svc_opts.NetworkID
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
@@ -75,13 +77,34 @@ func configureAPI(api *operations.EtherinfoAPI) http.Handler {
 		return operations.NewCreateGenesisOK().WithPayload(genesis)
 	})
 	api.GetInformationHandler = operations.GetInformationHandlerFunc(func(params operations.GetInformationParams) middleware.Responder {
-		return middleware.NotImplemented("operation .GetInformation has not yet been implemented")
+		infos, err := internal.GetInformationHandler(ctx)
+		if err != nil {
+			msg := fmt.Sprintf("GetInformationHandlerFunc: %v", err)
+			return operations.NewGetInformationDefault(500).WithPayload(&models.Error{
+				Message: &msg,
+			})
+		}
+		return operations.NewGetInformationOK().WithPayload(infos)
 	})
 	api.RegisterNodeHandler = operations.RegisterNodeHandlerFunc(func(params operations.RegisterNodeParams) middleware.Responder {
-		return middleware.NotImplemented("operation .RegisterNode has not yet been implemented")
+		fSuccess, err := internal.RegisterNodeHandler(ctx, params)
+		if err != nil {
+			msg := fmt.Sprintf("RegisterNodeHandlerFunc: %v", err)
+			return operations.NewRegisterNodeDefault(500).WithPayload(&models.Error{
+				Message: &msg,
+			})
+		}
+		return operations.NewRegisterNodeOK().WithPayload(fSuccess)
 	})
 	api.StartNodeHandler = operations.StartNodeHandlerFunc(func(params operations.StartNodeParams) middleware.Responder {
-		return middleware.NotImplemented("operation .StartNode has not yet been implemented")
+		fSuccess, err := internal.StartNodeHandler(ctx, params)
+		if err != nil {
+			msg := fmt.Sprintf("StartNodeHandlerFunc: %v", err)
+			return operations.NewStartNodeDefault(500).WithPayload(&models.Error{
+				Message: &msg,
+			})
+		}
+		return operations.NewStartNodeOK().WithPayload(fSuccess)
 	})
 
 	api.ServerShutdown = func() {}

@@ -6,6 +6,7 @@ import (
 
 type Context struct {
 	Db *gorm.DB
+	NetworkID int64
 }
 
 type GenesisConf struct {

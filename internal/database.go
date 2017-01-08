@@ -5,13 +5,11 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-
-	"github.com/Magicking/ether-swarm-services/models"
 )
 
 type Genesis struct {
 	gorm.Model
-	Genesis *models.Genesis
+	JSONData []byte
 }
 
 type Bootnode struct {
