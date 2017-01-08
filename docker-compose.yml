@@ -1,0 +1,17 @@
+version: '2'
+services:
+  ether-swarm-services:
+    build: .
+    environment:
+      - GG_EXTRA_DATA=Test42
+      - GG_BALANCE=1000000000000000000
+      - DB_DSN=host=postgres user=ether-swarm-services dbname=ether-swarm-services sslmode=disable password=ether-swarm-services
+    ports:
+      - "0.0.0.0:8090:8090"
+
+  postgres:
+    image: postgres:9.5
+    environment:
+      - POSTGRES_PASSWORD=ether-swarm-services
+      - POSTGRES_USER=ether-swarm-services
+      - POSTGRES_DB=ether-swarm-services
