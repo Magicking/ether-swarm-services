@@ -55,7 +55,7 @@ paths:
       summary: Register a node
       operationId: registerNode
       description: |
-        Register (boot)nodes that other nodes while connect to.
+        Register (boot)nodes that other nodes will connect to.
       responses:
         200:
           description: Indicate if the operation was successful.
