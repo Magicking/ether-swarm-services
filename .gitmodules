@@ -70,3 +70,12 @@
 [submodule "vendor/gopkg.in/yaml.v2"]
 	path = vendor/gopkg.in/yaml.v2
 	url = https://gopkg.in/yaml.v2
+[submodule "vendor/github.com/jinzhu/gorm"]
+	path = vendor/github.com/jinzhu/gorm
+	url = https://github.com/jinzhu/gorm
+[submodule "vendor/github.com/lib/pq"]
+	path = vendor/github.com/lib/pq
+	url = https://github.com/lib/pq
+[submodule "vendor/github.com/jinzhu/inflection"]
+	path = vendor/github.com/jinzhu/inflection
+	url = https://github.com/jinzhu/inflection
