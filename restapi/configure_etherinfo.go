@@ -1,6 +1,7 @@
 package restapi
 
 import (
+	"fmt"
 	"crypto/tls"
 	"net/http"
 	"log"
@@ -14,32 +15,34 @@ import (
 	"github.com/Magicking/ether-swarm-services/models"
 	"github.com/Magicking/ether-swarm-services/restapi/operations"
 
-	"github.com/Magicking/ether-swarm-services/internal/blockchain"
+	"github.com/Magicking/ether-swarm-services/internal"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
 
 //go:generate swagger generate server --target .. --name  --spec ../etherinfo.yml
 
-var genesis_opts struct {
-	Nonce       string `long:"nonce" env:"GG_NONCE" default:"0x0000000000000042" description:"Nonce of the genesis block"`
-	Timestamp   string `long:"timestamp" env:"GG_TIMESTAMP" default:"0x0" description:"Timestamp of the genesis block"`
-	ParentHash  string `long:"parent-hash" env:"GG_PARENT_HASH" default:"0x0" description:"Parent hash of the genesis block"`
-	ExtraData   string `long:"extra-data" env:"GG_EXTRA_DATA" description:"Extra data of the genesis block"`
-	GasLimit    string `long:"gas-limit" env:"GG_GAS_LIMIT" default:"0x8000000" description:"Gas limit of the genesis block"`
-	Difficulty  string `long:"difficulty" env:"GG_DIFFICULTY" default:"0x400" description:"Initial difficulty"`
-	Mixhash     string `long:"mixhash" env:"GG_MIX_HASH" default:"0x0" description:"Mixhash of the genesis block"`
-	Coinbase    string `long:"coinbase" env:"GG_COINBASE" default:"0x0" description:"Coinbase of the genesis block"`
-	Balance     string `long:"balance" env:"GG_BALANCE" default:"1000000000000000000" description:"Default balance in Wei for new account when new_allocator is used"`
+var genesis_opts internal.GenesisConf
+
+var svc_opts struct {
+	DbDsn     string `long:"db-dsn" env:"DB_DSN" default:"host=localhost dbname=etherinfo sslmode=disable" description:"Data source name, currently only support postgres"`
 }
 
 func configureFlags(api *operations.EtherinfoAPI) {
+	etherinfo_opts_grp := swag.CommandLineOptionsGroup{
+		LongDescription:  "Configurations options for this service",
+		ShortDescription: "Service options",
+		Options:          &svc_opts,
+	}
 	genesis_opts_grp := swag.CommandLineOptionsGroup{
 		LongDescription:  "Default entries for genesis block",
 		ShortDescription: "Genesis options",
 		Options:          &genesis_opts,
 	}
-	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{genesis_opts_grp}
+	api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{
+		genesis_opts_grp,
+		etherinfo_opts_grp,
+	}
 }
 
 func configureAPI(api *operations.EtherinfoAPI) http.Handler {
@@ -52,62 +55,24 @@ func configureAPI(api *operations.EtherinfoAPI) http.Handler {
 	// Example:
 	// s.api.Logger = log.Printf
 
+	ctx, err := internal.NewContext(svc_opts.DbDsn)
+	if err != nil {
+		log.Fatalf("configureAPI: %v", err)
+	}
+
 	api.JSONConsumer = runtime.JSONConsumer()
 
 	api.JSONProducer = runtime.JSONProducer()
 
 	api.CreateGenesisHandler = operations.CreateGenesisHandlerFunc(func(params operations.CreateGenesisParams) middleware.Responder {
-		var allocator int
-
-		if params.NewAllocator == nil {
-			if params.Genesis == nil {
-				allocator = 1
-			} else {
-				allocator = 0
-			}
-		} else {
-			allocator = int(*params.NewAllocator)
+		genesis, err := internal.CreateGenesisHandler(ctx, &genesis_opts, params)
+		if err != nil {
+			msg := fmt.Sprintf("CreateGenesisHandlerFunc: %v", err)
+			return operations.NewCreateGenesisDefault(500).WithPayload(&models.Error{
+				Message: &msg,
+			})
 		}
-
-		var genesis *models.Genesis
-		if params.Genesis == nil {
-			genesis = &models.Genesis{
-				Coinbase: &genesis_opts.Coinbase,
-				Difficulty: &genesis_opts.Difficulty,
-				ExtraData: &genesis_opts.ExtraData,
-				GasLimit: &genesis_opts.GasLimit,
-				Mixhash: &genesis_opts.Mixhash,
-				Nonce: &genesis_opts.Nonce,
-				ParentHash: &genesis_opts.ParentHash,
-				Timestamp: &genesis_opts.Timestamp,
-			}
-		} else {
-			genesis = params.Genesis
-		}
-
-		if genesis.Alloc == nil {
-			genesis.Alloc = make(map[string]models.Allocator)
-		}
-		for ; allocator > 0; allocator-- {
-			address, alloc, err := blockchain.NewAllocator(genesis_opts.Balance)
-			if err != nil {
-				log.Printf("CreateGenesis: %v", err)
-				return operations.NewCreateGenesisDefault(500)
-			}
-			_, ok := genesis.Alloc[address]
-			if ok {
-				allocator++
-				continue
-			}
-			genesis.Alloc[address] = *alloc
-		}
-		ret := operations.NewCreateGenesisOK().WithPayload(genesis)
-		for _, e := range genesis.Alloc {
-			e.PrivateKey = nil
-		}
-		// save it
-		log.Printf("%v", genesis)
-		return ret
+		return operations.NewCreateGenesisOK().WithPayload(genesis)
 	})
 	api.GetInformationHandler = operations.GetInformationHandlerFunc(func(params operations.GetInformationParams) middleware.Responder {
 		return middleware.NotImplemented("operation .GetInformation has not yet been implemented")
