@@ -31,7 +31,7 @@ func NewRegisterNode(ctx *middleware.Context, handler RegisterNodeHandler) *Regi
 
 Register a node
 
-Register (boot)nodes that other nodes while connect to.
+Register (boot)nodes that other nodes will connect to.
 
 
 */
