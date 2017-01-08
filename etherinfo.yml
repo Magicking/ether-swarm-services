@@ -50,6 +50,10 @@ paths:
           description: Information of the blockchain.
           schema:
             $ref: '#/definitions/Information'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /blockchain/bootnode:
     post:
       summary: Register a node
