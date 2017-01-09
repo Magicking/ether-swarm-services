@@ -50,7 +50,7 @@ type Genesis struct {
 	// smart things for ethernity. :)
 	//
 	// Required: true
-	ExtraData *string `json:"extra_data"`
+	ExtraData *string `json:"extraData"`
 
 	// gasLimit A scalar value equal to the current chain-wide limit of Gas
 	// expenditure per block. High in our case to avoid being limited by this
@@ -58,7 +58,7 @@ type Genesis struct {
 	// should not pay attention to the Gas consumption of our Contracts.
 	//
 	// Required: true
-	GasLimit *string `json:"gas_limit"`
+	GasLimit *string `json:"gasLimit"`
 
 	// mixhash A 256-bit hash which proves, combined with the nonce, that a
 	// sufficient amount of computation has been carried out on this block,
@@ -90,7 +90,7 @@ type Genesis struct {
 	// block, and only in this case, it's 0.
 	//
 	// Required: true
-	ParentHash *string `json:"parent_hash"`
+	ParentHash *string `json:"parentHash"`
 
 	// timestamp A scalar value equal to the reasonable output of Unix time()
 	// function at this block inception. This mechanism enforces a
@@ -179,7 +179,7 @@ func (m *Genesis) validateDifficulty(formats strfmt.Registry) error {
 
 func (m *Genesis) validateExtraData(formats strfmt.Registry) error {
 
-	if err := validate.Required("extra_data", "body", m.ExtraData); err != nil {
+	if err := validate.Required("extraData", "body", m.ExtraData); err != nil {
 		return err
 	}
 
@@ -188,7 +188,7 @@ func (m *Genesis) validateExtraData(formats strfmt.Registry) error {
 
 func (m *Genesis) validateGasLimit(formats strfmt.Registry) error {
 
-	if err := validate.Required("gas_limit", "body", m.GasLimit); err != nil {
+	if err := validate.Required("gasLimit", "body", m.GasLimit); err != nil {
 		return err
 	}
 
@@ -215,7 +215,7 @@ func (m *Genesis) validateNonce(formats strfmt.Registry) error {
 
 func (m *Genesis) validateParentHash(formats strfmt.Registry) error {
 
-	if err := validate.Required("parent_hash", "body", m.ParentHash); err != nil {
+	if err := validate.Required("parentHash", "body", m.ParentHash); err != nil {
 		return err
 	}
 

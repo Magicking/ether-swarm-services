@@ -107,9 +107,9 @@ definitions:
     required:
       - nonce
       - timestamp
-      - parent_hash
-      - extra_data
-      - gas_limit
+      - parentHash
+      - extraData
+      - gasLimit
       - difficulty
       - mixhash
     properties:
@@ -139,7 +139,7 @@ definitions:
           to the next block, is reduced. The timestamp also allows verifying the
           order of block within the chain (Yellowpaper, 4.3.4. (43)).
         default: "0x0"
-      parent_hash:
+      parentHash:
         type: string
         description: |
           parentHash The Keccak 256-bit hash of the entire parent block header
@@ -147,12 +147,12 @@ definitions:
           effectively building the chain of blocks. In the case of the Genesis
           block, and only in this case, it's 0.
         default: "0x0000000000000000000000000000000000000000000000000000000000000000"
-      extra_data:
+      extraData:
         type: string
         description: |
           extraData An optional free, but max. 32-byte long space to conserve
           smart things for ethernity. :)
-      gas_limit:
+      gasLimit:
         type: string
         description: |
           gasLimit A scalar value equal to the current chain-wide limit of Gas
