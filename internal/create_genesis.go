@@ -58,10 +58,23 @@ func CreateGenesisHandler(ctx *Context, gen_default *GenesisConf, params operati
 		}
 		genesis.Alloc[address] = *alloc
 	}
-	for _, e := range genesis.Alloc {
-		e.PrivateKey = nil
+
+	allocs := make(map[string]models.Allocator)
+	for i, v := range genesis.Alloc {
+		v.PrivateKey = nil
+		allocs[i] = v
 	}
-	jsonData, err := json.Marshal(genesis)
+	jsonData, err := json.Marshal(&models.Genesis{
+			Coinbase: genesis.Coinbase,
+			Difficulty: genesis.Difficulty,
+			ExtraData: genesis.ExtraData,
+			GasLimit: genesis.GasLimit,
+			Mixhash: genesis.Mixhash,
+			Nonce: genesis.Nonce,
+			ParentHash: genesis.ParentHash,
+			Timestamp: genesis.Timestamp,
+			Alloc: allocs,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("CreateGenesis: %v", err)
 	}
